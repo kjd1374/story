@@ -32,28 +32,29 @@ SYSTEM_PROMPT = """
 - **남주(두더지):** 뚱뚱한 회색 덩어리(감자 모양). 가운데 큰 동그라미 코. 점 눈. 땀 흘리는 표현 자주 사용.
 - **여주(페럿/담비):** 역삼각형 얼굴. 큰 동그라미 눈. 머리 뒤로 긴 선 몇 개(머리카락).
 
-[출력 형식 엄수]
-반드시 아래와 같은 구조로, 각 컷을 '|||' 구분자로 나누어 출력하세요. 마크다운이나 다른 사족을 달지 마세요.
+[필수 출력 형식]
+반드시 아래 포맷을 그대로 따르세요. 태그(---SVG_START--- 등)를 절대 생략하지 마세요.
 
-제목: [재치 있는 제목]
+제목: [제목]
 |||
-## 1컷 내용
-**상황:** [상황 묘사]
-**대사:** [캐릭터]: "대사"
+## 1컷
+**상황:** [묘사]
+**대사:** [대사]
 ---SVG_START---
-<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
-(여기에 1컷 상황을 묘사하는 단순한 졸라맨 스타일의 SVG 코드 작성. 남주, 여주 특징 살릴 것)
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="white"/>
+  <!-- 여기에 단순한 그림 코드 작성 -->
 </svg>
 ---SVG_END---
 |||
-## 2컷 내용
-(위와 동일한 구조)...
+## 2컷
+(위와 동일)
 |||
-## 3컷 내용
-(위와 동일한 구조)...
+## 3컷
+(위와 동일)
 |||
-## 4컷 내용
-(위와 동일한 구조, 마지막 컷 반전/유머 필수)...
+## 4컷
+(위와 동일)
 """
 
 def main():
@@ -96,6 +97,10 @@ def main():
             with st.spinner("🐭 두더지가 열심히 그림을 그리고 있어요... (약 10초)"):
                 response = model.generate_content(episode)
                 
+                # 디버깅용 원본 데이터 확인 (개발 단계에서 유용)
+                with st.expander("디버깅: 원본 데이터 보기"):
+                    st.text(response.text)
+
                 # 응답 파싱
                 parts = response.text.split("|||")
                 
@@ -106,7 +111,9 @@ def main():
                     st.header(parts[0].strip())
 
                 # 컷별 출력 (나머지 파트)
-                for part in parts[1:]:
+                for i, part in enumerate(parts[1:], 1):
+                    st.subheader(f"{i}컷") # 컷 번호 명시적으로 표시
+                    
                     if "---SVG_START---" in part and "---SVG_END---" in part:
                         text_content, svg_content = part.split("---SVG_START---")
                         svg_code = svg_content.split("---SVG_END---")[0].strip()
@@ -114,16 +121,21 @@ def main():
                         # 텍스트 표시
                         st.markdown(text_content.strip())
                         
-                        # SVG 표시 (가운데 정렬)
+                        # SVG 코드 정제 (가끔 마크다운 코드블럭 ```xml 등이 섞일 수 있음)
+                        svg_code = svg_code.replace("```xml", "").replace("```svg", "").replace("```", "")
+                        
+                        # SVG 표시
                         st.html(f"""
-                            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: center; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; padding: 10px;">
                                 {svg_code}
                             </div>
                         """)
-                        st.markdown("---")
                     else:
-                        # SVG가 없는 경우 텍스트만 표시 (예외 처리)
+                        # SVG가 없는 경우 텍스트만 표시
                         st.markdown(part)
+                        st.warning("⚠️ 이 컷은 이미지가 생성되지 않았습니다.")
+                    
+                    st.markdown("---")
 
         except Exception as e:
             st.error(f"에러가 났어 ㅠㅠ: {e}")
