@@ -33,10 +33,11 @@ st.markdown("""
 # 3. 시스템 프롬프트 (SVG 생성 포함)
 SYSTEM_PROMPT = """
 당신은 프로페셔널 인스타툰 콘티 작가입니다.
-⚠️ 매우 중요: 각 컷의 SVG 그림은 반드시 완전한 캐릭터(두더지 또는 페럿)를 포함해야 합니다.
-단순한 배경색, 텍스트, 도형만으로는 절대 안 됩니다. 반드시 사람처럼 보이는 캐릭터를 그려야 합니다.
+⚠️⚠️⚠️ 절대적으로 중요: 각 컷의 SVG 그림은 반드시 완전하고 상세한 캐릭터(두더지 또는 페럿)를 포함해야 합니다.
+배경색, 텍스트, 단순한 도형만으로는 절대 안 됩니다. 반드시 완전한 사람처럼 보이는 캐릭터를 제대로 그려야 합니다.
+간단하게 그리지 말고, 상세하고 완전하게 그려야 합니다.
 
-사용자의 입력을 바탕으로 4컷 만화를 위한 상세한 콘티를 작성하세요.
+사용자의 입력을 바탕으로 4컷 만화를 위한 상세하고 완전한 콘티를 작성하세요.
 
 [콘티 작성 가이드 - 필수! 반드시 모든 항목을 상세히 작성하세요!]
 
@@ -88,8 +89,10 @@ SYSTEM_PROMPT = """
 
 [SVG 그림 - 절대 필수 체크리스트!]
 ⚠️⚠️⚠️ 경고: 이 체크리스트를 모두 만족하지 않으면 안 됩니다! ⚠️⚠️⚠️
+⚠️ 간단하게 그리지 말고, 완전하고 상세하게 그려야 합니다! ⚠️
 
 각 SVG 그림은 반드시 다음을 모두 포함해야 합니다 (하나라도 빠지면 안 됩니다):
+각 요소를 제대로 그리고, 상세하게 표현해야 합니다.
 
 ✅ 체크리스트:
 □ 1. 흰색 배경: <rect width="400" height="400" fill="white"/>
@@ -173,6 +176,7 @@ SYSTEM_PROMPT = """
 [SVG 코드 작성 예시 - 반드시 이 형식을 정확히 따라하세요!]
 
 ⚠️⚠️⚠️ 필수: 아래 예시 코드를 정확히 복사해서 사용하되, 표정과 포즈만 상황에 맞게 수정하세요! ⚠️⚠️⚠️
+간단하게 그리지 말고, 완전하고 상세하게 그려야 합니다!
 
 ```svg
 <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
@@ -217,10 +221,14 @@ SYSTEM_PROMPT = """
 </svg>
 ```
 
-⚠️⚠️⚠️ 위 13개 요소를 모두 그려야 합니다! 하나라도 빠지면 안 됩니다! ⚠️⚠️⚠️
+⚠️⚠️⚠️ 위 13개 요소를 모두 제대로 그리고 상세하게 그려야 합니다! 하나라도 빠지면 안 됩니다! ⚠️⚠️⚠️
+간단하게 그리지 말고, 완전하고 상세하게 그려야 합니다!
 
 [출력 포맷]
 반드시 아래 형식을 지키세요.
+
+⚠️⚠️⚠️ 중요: SVG 그림을 그릴 때는 간단하게 그리지 말고, 완전하고 상세하게 그려야 합니다! ⚠️⚠️⚠️
+모든 캐릭터 부위를 제대로 그리고, 배경도 상세하게 표현해야 합니다!
 
 제목: [제목]
 ||||
@@ -251,7 +259,8 @@ SYSTEM_PROMPT = """
 </svg>
 ```
 
-⚠️ 위 코드는 최소한의 예시입니다. 상황에 맞게 표정, 포즈, 배경을 수정하되, 13개 요소는 반드시 모두 포함해야 합니다!
+⚠️ 위 코드는 기본 예시입니다. 상황에 맞게 표정, 포즈, 배경을 상세하게 수정하되, 13개 요소는 반드시 모두 제대로 그리고 완전하게 포함해야 합니다!
+간단하게 그리지 말고, 완전하고 상세하게 그려야 합니다!
 ||||
 ## 2컷
 (위와 동일 형식으로, 각 항목을 최소 2-3문장으로 상세히 작성)
@@ -438,49 +447,47 @@ def main():
                     display_story(title, parts_data)
                     
                     # 저장 버튼 (항상 표시)
-                    if st.button("💾 콘티 저장하기", use_container_width=True, key="save_story"):
-                        if 'last_story' in st.session_state:
-                            story = st.session_state['last_story']
-                            try:
-                                filepath = save_story(
-                                    story['title'], 
-                                    story['episode'], 
-                                    story['response_text'], 
-                                    story['parts']
-                                )
-                                st.success(f"✅ 저장 완료! 📁 {filepath.name}")
-                                st.info("💡 '저장된 콘티 보기' 탭에서 확인할 수 있습니다.")
-                                
-                                # 저장 후 즉시 확인
-                                if filepath.exists():
-                                    file_size = filepath.stat().st_size
-                                    st.success(f"✅ 파일 확인됨! 크기: {file_size} bytes")
+                    st.markdown("---")
+                    st.markdown("### 💾 콘티 저장하기")
+                    
+                    col1, col2 = st.columns([3, 1])
+                    with col1:
+                        if st.button("💾 저장하기", use_container_width=True, key="save_story"):
+                            if 'last_story' in st.session_state:
+                                story = st.session_state['last_story']
+                                try:
+                                    # 저장 디렉토리 확인
+                                    st.write(f"📂 저장 위치: {STORAGE_DIR.absolute()}")
                                     
-                                    # 저장 후 디버깅 정보 표시
-                                    with st.expander("🔍 저장 확인", expanded=True):
-                                        st.write(f"✅ 저장 완료된 파일: {filepath.name}")
-                                        st.write(f"📂 전체 경로: {filepath.absolute()}")
-                                        st.write(f"📏 파일 크기: {file_size} bytes")
-                                        if STORAGE_DIR.exists():
-                                            files = list(STORAGE_DIR.glob("*.json"))
-                                            st.write(f"📁 저장된 파일 총 개수: {len(files)}")
-                                            if files:
-                                                st.write("📋 최근 저장된 파일 목록:")
-                                                for f in sorted(files, reverse=True)[:5]:
-                                                    size = f.stat().st_size
-                                                    st.write(f"  - {f.name} ({size} bytes)")
-                                        st.write(f"📂 저장 디렉토리: {STORAGE_DIR.absolute()}")
-                                else:
-                                    st.error(f"❌ 파일이 저장되지 않았습니다! 경로: {filepath}")
-                                
-                                # 저장 성공 표시를 위해 세션 상태에 저장 완료 플래그 설정
-                                st.session_state['save_success'] = True
-                                st.session_state['saved_filename'] = filepath.name
-                            except Exception as e:
-                                st.error(f"저장 중 오류 발생: {e}")
-                                st.exception(e)  # 상세한 에러 정보 표시
-                        else:
-                            st.warning("저장할 콘티가 없습니다. 먼저 콘티를 생성해주세요.")
+                                    filepath = save_story(
+                                        story['title'], 
+                                        story['episode'], 
+                                        story['response_text'], 
+                                        story['parts']
+                                    )
+                                    
+                                    # 저장 후 즉시 확인
+                                    if filepath.exists():
+                                        file_size = filepath.stat().st_size
+                                        st.success(f"✅ 저장 완료! 📁 {filepath.name} ({file_size} bytes)")
+                                        st.info("💡 '저장된 콘티 보기' 탭에서 확인할 수 있습니다.")
+                                        
+                                        # 저장 성공 표시를 위해 세션 상태에 저장 완료 플래그 설정
+                                        st.session_state['save_success'] = True
+                                        st.session_state['saved_filename'] = filepath.name
+                                        
+                                        # 자동으로 탭2로 이동하도록 안내
+                                        st.balloons()
+                                    else:
+                                        st.error(f"❌ 파일이 저장되지 않았습니다! 경로: {filepath.absolute()}")
+                                        
+                                except Exception as e:
+                                    st.error(f"❌ 저장 중 오류 발생: {e}")
+                                    st.exception(e)  # 상세한 에러 정보 표시
+                                    st.write(f"📂 저장 디렉토리: {STORAGE_DIR.absolute()}")
+                                    st.write(f"📂 디렉토리 존재 여부: {STORAGE_DIR.exists()}")
+                            else:
+                                st.warning("⚠️ 저장할 콘티가 없습니다. 먼저 콘티를 생성해주세요.")
             
             except Exception as e:
                 st.error(f"에러 발생: {e}")
