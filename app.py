@@ -41,10 +41,10 @@ def main():
 
     # API Key 처리 (st.secrets 우선 사용)
     try:
-        api_key = st.secrets["AIzaSyDBZfdDnZ2PO2qSQ-2Ps9k8x9ftfwal56g"]
+        api_key = st.secrets["GEMINI_API_KEY"]
     except FileNotFoundError:
         # 로컬 테스트용 (secrets.toml 파일이 없을 때)
-        api_key = os.environ.get("AIzaSyDBZfdDnZ2PO2qSQ-2Ps9k8x9ftfwal56g")
+        api_key = os.environ.get("GEMINI_API_KEY")
     
     if not api_key:
         st.error("🚨 API 키가 설정되지 않았습니다. Streamlit Cloud의 Secrets 설정을 확인해주세요.")
