@@ -41,10 +41,10 @@ def main():
 
     # API Key 처리 (st.secrets 우선 사용)
     try:
-        api_key = st.secrets["GEMINI_API_KEY"]
+        api_key = st.secrets["AIzaSyDBZfdDnZ2PO2qSQ-2Ps9k8x9ftfwal56g"]
     except FileNotFoundError:
         # 로컬 테스트용 (secrets.toml 파일이 없을 때)
-        api_key = os.environ.get("GEMINI_API_KEY")
+        api_key = os.environ.get("AIzaSyDBZfdDnZ2PO2qSQ-2Ps9k8x9ftfwal56g")
     
     if not api_key:
         st.error("🚨 API 키가 설정되지 않았습니다. Streamlit Cloud의 Secrets 설정을 확인해주세요.")
@@ -67,9 +67,9 @@ def main():
 
         try:
             # Gemini 설정
-            genai.configure(api_key=api_key)
+            genai.configure(_key=api_key)
             model = genai.GenerativeModel(
-                model_name="gemini-1.5-flash",
+                model_name="gemini-2.5-flash",
                 system_instruction=SYSTEM_PROMPT
             )
 
