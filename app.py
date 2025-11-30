@@ -32,9 +32,11 @@ st.markdown("""
 
 # 3. 시스템 프롬프트 (SVG 생성 포함)
 SYSTEM_PROMPT = """
-당신은 프로페셔널 인스타툰 콘티 작가이자, 상세한 스토리보드 작가입니다.
-사용자의 입력을 바탕으로 4컷 만화를 위한 매우 상세하고 구체적인 콘티를 작성하세요.
-이 콘티는 나중에 실제 만화를 그릴 때 참고할 수 있도록 충분히 상세해야 합니다.
+당신은 프로페셔널 인스타툰 콘티 작가입니다.
+⚠️ 매우 중요: 각 컷의 SVG 그림은 반드시 완전한 캐릭터(두더지 또는 페럿)를 포함해야 합니다.
+단순한 배경색, 텍스트, 도형만으로는 절대 안 됩니다. 반드시 사람처럼 보이는 캐릭터를 그려야 합니다.
+
+사용자의 입력을 바탕으로 4컷 만화를 위한 상세한 콘티를 작성하세요.
 
 [콘티 작성 가이드 - 필수! 반드시 모든 항목을 상세히 작성하세요!]
 
@@ -84,15 +86,27 @@ SYSTEM_PROMPT = """
    - 효과음의 위치와 크기
    - 시각적 효과 (번쩍임, 먼지, 바람 등)
 
-[SVG 그림 - 절대적으로 중요! 반드시 완전한 그림을 그려야 합니다!]
-⚠️ 경고: 단순한 배경색과 도형만 그리면 안 됩니다! 반드시 완전한 캐릭터와 배경을 그려야 합니다!
+[SVG 그림 - 절대 필수 체크리스트!]
+⚠️⚠️⚠️ 경고: 이 체크리스트를 모두 만족하지 않으면 안 됩니다! ⚠️⚠️⚠️
 
-SVG 그림은 실제 만화처럼 보여야 합니다. 다음을 반드시 포함해야 합니다:
-1. 배경 (바닥, 벽, 소품 등)
-2. 캐릭터 전체 (머리, 몸통, 팔, 다리 모두)
-3. 표정 (눈, 코, 입 모두)
-4. 포즈 (팔과 다리의 위치)
-5. 소품 (핸드폰, 가방, 테이블 등 상황에 맞는 것)
+각 SVG 그림은 반드시 다음을 모두 포함해야 합니다 (하나라도 빠지면 안 됩니다):
+
+✅ 체크리스트:
+□ 1. 흰색 배경: <rect width="400" height="400" fill="white"/>
+□ 2. 바닥: <rect x="0" y="300" width="400" height="100" fill="#ddd"/>
+□ 3. 벽 또는 배경: <rect x="0" y="0" width="400" height="300" fill="#f0f0f0"/>
+□ 4. 캐릭터 몸통: <ellipse cx="200" cy="220" rx="50" ry="70" fill="#999"/>
+□ 5. 캐릭터 머리: <ellipse cx="200" cy="120" rx="35" ry="40" fill="#aaa"/>
+□ 6. 코: <circle cx="200" cy="120" r="6" fill="black"/>
+□ 7. 왼쪽 눈: <circle cx="185" cy="110" r="5" fill="black"/>
+□ 8. 오른쪽 눈: <circle cx="215" cy="110" r="5" fill="black"/>
+□ 9. 입: <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/> 또는 <path>로 웃는 모양
+□ 10. 왼쪽 팔: <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+□ 11. 오른쪽 팔: <line x1="250" y1="200" x2="270" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+□ 12. 왼쪽 다리: <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+□ 13. 오른쪽 다리: <line x1="230" y1="290" x2="240" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+
+⚠️ 위 13개 항목을 모두 그려야 합니다! 하나라도 빠지면 안 됩니다!
 
 - **좌표계:** 반드시 viewBox="0 0 400 400" 기준. (0~400 사이 좌표만 사용)
 - **필수 요소:** 모든 SVG는 <rect width="400" height="400" fill="white"/> 로 시작해서 흰 배경을 깔아야 함.
@@ -156,39 +170,54 @@ SVG 그림은 실제 만화처럼 보여야 합니다. 다음을 반드시 포�
   - 풀샷: 캐릭터 전체와 배경 포함 (전신, 크기 100x200 정도)
   - 미디엄샷: 상반신과 일부 배경 (상반신, 크기 150x200 정도)
 
-[SVG 코드 작성 예시 - 반드시 참고하세요!]
+[SVG 코드 작성 예시 - 반드시 이 형식을 정확히 따라하세요!]
+
+⚠️⚠️⚠️ 필수: 아래 예시 코드를 정확히 복사해서 사용하되, 표정과 포즈만 상황에 맞게 수정하세요! ⚠️⚠️⚠️
+
 ```svg
 <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- 1. 흰 배경 (필수) -->
   <rect width="400" height="400" fill="white"/>
-  <!-- 배경: 공항 대합실 -->
-  <rect x="0" y="300" width="400" height="100" fill="#ddd"/> <!-- 바닥 -->
-  <rect x="0" y="0" width="400" height="300" fill="#e8f4f8"/> <!-- 벽 -->
-  <rect x="50" y="50" width="100" height="150" fill="#87ceeb" opacity="0.3"/> <!-- 창문 -->
-  <!-- 두더지: 당황한 표정 -->
-  <ellipse cx="200" cy="220" rx="50" ry="70" fill="#999"/> <!-- 몸통 -->
-  <ellipse cx="200" cy="120" rx="35" ry="40" fill="#aaa"/> <!-- 머리 -->
-  <circle cx="200" cy="120" r="6" fill="black"/> <!-- 코 -->
-  <circle cx="185" cy="110" r="8" fill="black"/> <!-- 왼쪽 눈 (큰 원) -->
-  <circle cx="215" cy="110" r="8" fill="black"/> <!-- 오른쪽 눈 (큰 원) -->
-  <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/> <!-- 벌어진 입 -->
-  <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/> <!-- 왼쪽 팔 -->
-  <line x1="250" y1="200" x2="270" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/> <!-- 오른쪽 팔 -->
-  <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/> <!-- 왼쪽 다리 -->
-  <line x1="230" y1="290" x2="240" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/> <!-- 오른쪽 다리 -->
+  
+  <!-- 2. 바닥 (필수) -->
+  <rect x="0" y="300" width="400" height="100" fill="#ddd"/>
+  
+  <!-- 3. 벽/배경 (필수) -->
+  <rect x="0" y="0" width="400" height="300" fill="#e8f4f8"/>
+  
+  <!-- 4. 캐릭터 몸통 (필수) -->
+  <ellipse cx="200" cy="220" rx="50" ry="70" fill="#999"/>
+  
+  <!-- 5. 캐릭터 머리 (필수) -->
+  <ellipse cx="200" cy="120" rx="35" ry="40" fill="#aaa"/>
+  
+  <!-- 6. 코 (필수) -->
+  <circle cx="200" cy="120" r="6" fill="black"/>
+  
+  <!-- 7. 왼쪽 눈 (필수) - 표정에 따라 크기 변경 -->
+  <circle cx="185" cy="110" r="8" fill="black"/>
+  
+  <!-- 8. 오른쪽 눈 (필수) - 표정에 따라 크기 변경 -->
+  <circle cx="215" cy="110" r="8" fill="black"/>
+  
+  <!-- 9. 입 (필수) - 표정에 따라 모양 변경 -->
+  <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/>
+  
+  <!-- 10. 왼쪽 팔 (필수) - 포즈에 따라 위치 변경 -->
+  <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- 11. 오른쪽 팔 (필수) - 포즈에 따라 위치 변경 -->
+  <line x1="250" y1="200" x2="270" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- 12. 왼쪽 다리 (필수) -->
+  <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+  
+  <!-- 13. 오른쪽 다리 (필수) -->
+  <line x1="230" y1="290" x2="240" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
 </svg>
 ```
 
-⚠️ 중요: 위 예시처럼 반드시 다음을 모두 그려야 합니다:
-1. 배경 (바닥, 벽, 소품)
-2. 캐릭터 몸통
-3. 캐릭터 머리
-4. 캐릭터 코
-5. 캐릭터 눈 2개
-6. 캐릭터 입
-7. 캐릭터 팔 2개
-8. 캐릭터 다리 2개
-
-하나라도 빠지면 안 됩니다! 단순한 배경색과 도형만 그리면 절대 안 됩니다!
+⚠️⚠️⚠️ 위 13개 요소를 모두 그려야 합니다! 하나라도 빠지면 안 됩니다! ⚠️⚠️⚠️
 
 [출력 포맷]
 반드시 아래 형식을 지키세요.
@@ -207,12 +236,22 @@ SVG 그림은 실제 만화처럼 보여야 합니다. 다음을 반드시 포�
 ```svg
 <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
   <rect width="400" height="400" fill="white"/>
-  <!-- 배경 요소 먼저 그리기 -->
-  <!-- 캐릭터 그리기 -->
-  <!-- 표정과 포즈 표현 -->
-  <!-- 효과음이나 시각적 효과 -->
+  <rect x="0" y="300" width="400" height="100" fill="#ddd"/>
+  <rect x="0" y="0" width="400" height="300" fill="#e8f4f8"/>
+  <ellipse cx="200" cy="220" rx="50" ry="70" fill="#999"/>
+  <ellipse cx="200" cy="120" rx="35" ry="40" fill="#aaa"/>
+  <circle cx="200" cy="120" r="6" fill="black"/>
+  <circle cx="185" cy="110" r="8" fill="black"/>
+  <circle cx="215" cy="110" r="8" fill="black"/>
+  <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/>
+  <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+  <line x1="250" y1="200" x2="270" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+  <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+  <line x1="230" y1="290" x2="240" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
 </svg>
 ```
+
+⚠️ 위 코드는 최소한의 예시입니다. 상황에 맞게 표정, 포즈, 배경을 수정하되, 13개 요소는 반드시 모두 포함해야 합니다!
 ||||
 ## 2컷
 (위와 동일 형식으로, 각 항목을 최소 2-3문장으로 상세히 작성)
@@ -372,7 +411,7 @@ def main():
             try:
                 genai.configure(api_key=api_key)
                 model = genai.GenerativeModel(
-                    model_name="gemini-2.5-flash",
+                    model_name="gemini-2.5-pro",  # 더 강력한 모델 사용
                     system_instruction=SYSTEM_PROMPT
                 )
                 
