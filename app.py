@@ -6,8 +6,9 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-# 저장 디렉토리 설정
-STORAGE_DIR = Path("saved_stories")
+# 저장 디렉토리 설정 (현재 파일 위치 기준)
+BASE_DIR = Path(__file__).parent.absolute()
+STORAGE_DIR = BASE_DIR / "saved_stories"
 STORAGE_DIR.mkdir(exist_ok=True)
 
 # 1. 페이지 설정 (모바일 친화적)
@@ -83,29 +84,44 @@ SYSTEM_PROMPT = """
    - 효과음의 위치와 크기
    - 시각적 효과 (번쩍임, 먼지, 바람 등)
 
-[SVG 그림 - 매우 중요! 반드시 읽고 따라하세요!]
-SVG 그림은 단순한 스케치가 아니라, 위에서 설명한 모든 요소를 시각적으로 명확하게 표현해야 합니다.
-사람이 보기에 이해할 수 있는 수준의 그림이어야 합니다.
+[SVG 그림 - 절대적으로 중요! 반드시 완전한 그림을 그려야 합니다!]
+⚠️ 경고: 단순한 배경색과 도형만 그리면 안 됩니다! 반드시 완전한 캐릭터와 배경을 그려야 합니다!
+
+SVG 그림은 실제 만화처럼 보여야 합니다. 다음을 반드시 포함해야 합니다:
+1. 배경 (바닥, 벽, 소품 등)
+2. 캐릭터 전체 (머리, 몸통, 팔, 다리 모두)
+3. 표정 (눈, 코, 입 모두)
+4. 포즈 (팔과 다리의 위치)
+5. 소품 (핸드폰, 가방, 테이블 등 상황에 맞는 것)
 
 - **좌표계:** 반드시 viewBox="0 0 400 400" 기준. (0~400 사이 좌표만 사용)
 - **필수 요소:** 모든 SVG는 <rect width="400" height="400" fill="white"/> 로 시작해서 흰 배경을 깔아야 함.
 
-- **배경:** 배경 요소를 먼저 그리고, 그 위에 캐릭터를 그려야 함. 배경이 없으면 단조로워 보임.
-  예시: 공항이면 바닥(회색 사각형), 벽(연한 회색), 창문, 표지판 등
+- **배경 (필수!):** 
+  * 바닥: <rect x="0" y="300" width="400" height="100" fill="#ddd"/> (또는 상황에 맞는 색상)
+  * 벽: <rect x="0" y="0" width="400" height="300" fill="#f0f0f0"/> (또는 상황에 맞는 색상)
+  * 소품: 상황에 맞는 테이블, 의자, 표지판 등을 반드시 그려야 함
+  * 배경이 없으면 절대 안 됩니다!
 
-- **캐릭터 디자인 - 두더지 (매우 중요!):**
-  * 머리: 타원형, 중심 (cx="200" cy="120"), 크기 (rx="35" ry="40"), 색상 (#aaa 또는 #999)
-  * 몸통: 타원형, 중심 (cx="200" cy="220"), 크기 (rx="50" ry="70"), 색상 (#999)
-  * 코: 검은 원, 중심 (cx="200" cy="120"), 반지름 r="6"
-  * 눈: 두 개의 원, 좌 (cx="185" cy="110"), 우 (cx="215" cy="110"), 반지름 r="5", 표정에 따라 모양 변경
-    - 기쁨: 눈을 반원으로 (<path d="M 180 110 Q 185 105 190 110" stroke="black" fill="none" stroke-width="2"/>)
-    - 당황: 큰 원 (r="8")
-    - 화남: 작은 원 + 위쪽 선 (찡그린 눈)
-  * 입: 표정에 따라
-    - 기쁨: 웃는 입 (<path d="M 185 130 Q 200 140 215 130" stroke="black" fill="none" stroke-width="2"/>)
-    - 당황: 벌어진 입 (타원형 <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/>)
-  * 팔: <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
-  * 다리: <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+- **캐릭터 디자인 - 두더지 (절대 필수! 모든 부위를 그려야 함!):**
+  ⚠️ 두더지는 반드시 다음 모든 부위를 그려야 합니다:
+  
+  * 몸통 (가장 먼저): <ellipse cx="200" cy="220" rx="50" ry="70" fill="#999"/>
+  * 머리 (몸통 위에): <ellipse cx="200" cy="120" rx="35" ry="40" fill="#aaa"/>
+  * 코 (머리 중앙): <circle cx="200" cy="120" r="6" fill="black"/>
+  * 눈 (머리 위쪽, 코 양옆): 
+    - 기본: <circle cx="185" cy="110" r="5" fill="black"/> 와 <circle cx="215" cy="110" r="5" fill="black"/>
+    - 당황: <circle cx="185" cy="110" r="8" fill="black"/> 와 <circle cx="215" cy="110" r="8" fill="black"/>
+    - 기쁨: <path d="M 180 110 Q 185 105 190 110" stroke="black" fill="none" stroke-width="2"/>
+  * 입 (머리 아래쪽, 코 아래):
+    - 당황: <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/>
+    - 기쁨: <path d="M 185 130 Q 200 140 215 130" stroke="black" fill="none" stroke-width="2"/>
+  * 왼쪽 팔 (필수!): <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+  * 오른쪽 팔 (필수!): <line x1="250" y1="200" x2="270" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+  * 왼쪽 다리 (필수!): <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+  * 오른쪽 다리 (필수!): <line x1="230" y1="290" x2="240" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+  
+  ⚠️ 팔과 다리를 그리지 않으면 안 됩니다! 팔 2개, 다리 2개 모두 필수입니다!
 
 - **캐릭터 디자인 - 페럿 (매우 중요!):**
   * 얼굴: 역삼각형, 중심 (cx="200" cy="130")
@@ -162,7 +178,17 @@ SVG 그림은 단순한 스케치가 아니라, 위에서 설명한 모든 요�
 </svg>
 ```
 
-위 예시처럼 반드시 배경, 캐릭터의 모든 부위(머리, 몸통, 팔, 다리), 표정을 명확하게 그려야 합니다.
+⚠️ 중요: 위 예시처럼 반드시 다음을 모두 그려야 합니다:
+1. 배경 (바닥, 벽, 소품)
+2. 캐릭터 몸통
+3. 캐릭터 머리
+4. 캐릭터 코
+5. 캐릭터 눈 2개
+6. 캐릭터 입
+7. 캐릭터 팔 2개
+8. 캐릭터 다리 2개
+
+하나라도 빠지면 안 됩니다! 단순한 배경색과 도형만 그리면 절대 안 됩니다!
 
 [출력 포맷]
 반드시 아래 형식을 지키세요.
@@ -195,6 +221,12 @@ SVG 그림은 단순한 스케치가 아니라, 위에서 설명한 모든 요�
 
 def save_story(title, episode, response_text, parts_data):
     """콘티를 JSON 파일로 저장"""
+    # 저장 디렉토리 확인 및 생성
+    try:
+        STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        raise Exception(f"저장 디렉토리 생성 실패: {e}")
+    
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     # 파일명에 사용할 수 없는 문자 제거
     safe_title = re.sub(r'[<>:"/\\|?*]', '', title[:20])
@@ -212,10 +244,21 @@ def save_story(title, episode, response_text, parts_data):
         "parts": parts_data
     }
     
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(story_data, f, ensure_ascii=False, indent=2)
-    
-    return filepath
+    try:
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(story_data, f, ensure_ascii=False, indent=2)
+        
+        # 파일이 실제로 저장되었는지 확인
+        if not filepath.exists():
+            raise Exception(f"파일 저장 후 확인 실패: {filepath}")
+        
+        # 파일 크기 확인 (빈 파일이 아닌지)
+        if filepath.stat().st_size == 0:
+            raise Exception(f"저장된 파일이 비어있음: {filepath}")
+        
+        return filepath
+    except Exception as e:
+        raise Exception(f"파일 저장 실패: {e}, 경로: {filepath}")
 
 def load_saved_stories():
     """저장된 콘티 목록 불러오기"""
@@ -355,53 +398,67 @@ def main():
                     st.success("생성 완료! 🎉")
                     display_story(title, parts_data)
                     
-                    # 저장 버튼
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        if st.button("💾 콘티 저장하기", use_container_width=True, key="save_story"):
-                            if 'last_story' in st.session_state:
-                                story = st.session_state['last_story']
-                                try:
-                                    filepath = save_story(
-                                        story['title'], 
-                                        story['episode'], 
-                                        story['response_text'], 
-                                        story['parts']
-                                    )
-                                    st.success(f"✅ 저장 완료! 📁 {filepath.name}")
-                                    st.info("💡 '저장된 콘티 보기' 탭에서 확인할 수 있습니다.")
-                                    # 저장 성공 표시를 위해 세션 상태에 저장 완료 플래그 설정
-                                    st.session_state['save_success'] = True
-                                    st.session_state['saved_filename'] = filepath.name
-                                except Exception as e:
-                                    st.error(f"저장 중 오류 발생: {e}")
-                                    st.exception(e)  # 상세한 에러 정보 표시
-                            else:
-                                st.warning("저장할 콘티가 없습니다.")
-                    
-                    # 저장 성공 시 디버깅 정보 표시
-                    if st.session_state.get('save_success', False):
-                        saved_filename = st.session_state.get('saved_filename', '')
-                        with st.expander("🔍 저장 확인 (디버깅)", expanded=True):
-                            st.write(f"✅ 저장 완료된 파일: {saved_filename}")
-                            if STORAGE_DIR.exists():
-                                files = list(STORAGE_DIR.glob("*.json"))
-                                st.write(f"📁 저장된 파일 총 개수: {len(files)}")
-                                if files:
-                                    st.write("📋 최근 저장된 파일 목록:")
-                                    for f in sorted(files, reverse=True)[:5]:
-                                        st.write(f"  - {f.name}")
-                                # 파일 경로 표시
-                                st.write(f"📂 저장 경로: {STORAGE_DIR.absolute()}")
-                            else:
-                                st.error("❌ 저장 디렉토리가 없습니다!")
-                                st.write(f"생성 시도: {STORAGE_DIR.absolute()}")
+                    # 저장 버튼 (항상 표시)
+                    if st.button("💾 콘티 저장하기", use_container_width=True, key="save_story"):
+                        if 'last_story' in st.session_state:
+                            story = st.session_state['last_story']
+                            try:
+                                filepath = save_story(
+                                    story['title'], 
+                                    story['episode'], 
+                                    story['response_text'], 
+                                    story['parts']
+                                )
+                                st.success(f"✅ 저장 완료! 📁 {filepath.name}")
+                                st.info("💡 '저장된 콘티 보기' 탭에서 확인할 수 있습니다.")
+                                
+                                # 저장 후 즉시 확인
+                                if filepath.exists():
+                                    file_size = filepath.stat().st_size
+                                    st.success(f"✅ 파일 확인됨! 크기: {file_size} bytes")
+                                    
+                                    # 저장 후 디버깅 정보 표시
+                                    with st.expander("🔍 저장 확인", expanded=True):
+                                        st.write(f"✅ 저장 완료된 파일: {filepath.name}")
+                                        st.write(f"📂 전체 경로: {filepath.absolute()}")
+                                        st.write(f"📏 파일 크기: {file_size} bytes")
+                                        if STORAGE_DIR.exists():
+                                            files = list(STORAGE_DIR.glob("*.json"))
+                                            st.write(f"📁 저장된 파일 총 개수: {len(files)}")
+                                            if files:
+                                                st.write("📋 최근 저장된 파일 목록:")
+                                                for f in sorted(files, reverse=True)[:5]:
+                                                    size = f.stat().st_size
+                                                    st.write(f"  - {f.name} ({size} bytes)")
+                                        st.write(f"📂 저장 디렉토리: {STORAGE_DIR.absolute()}")
+                                else:
+                                    st.error(f"❌ 파일이 저장되지 않았습니다! 경로: {filepath}")
+                                
+                                # 저장 성공 표시를 위해 세션 상태에 저장 완료 플래그 설정
+                                st.session_state['save_success'] = True
+                                st.session_state['saved_filename'] = filepath.name
+                            except Exception as e:
+                                st.error(f"저장 중 오류 발생: {e}")
+                                st.exception(e)  # 상세한 에러 정보 표시
+                        else:
+                            st.warning("저장할 콘티가 없습니다. 먼저 콘티를 생성해주세요.")
             
             except Exception as e:
                 st.error(f"에러 발생: {e}")
     
     with tab2:
         st.title("📚 저장된 콘티 목록")
+        
+        # 저장 경로 및 상태 표시
+        col1, col2 = st.columns(2)
+        with col1:
+            st.caption(f"📂 저장 위치: {STORAGE_DIR.absolute()}")
+        with col2:
+            if STORAGE_DIR.exists():
+                files = list(STORAGE_DIR.glob("*.json"))
+                st.caption(f"📁 파일 개수: {len(files)}개")
+            else:
+                st.caption("⚠️ 저장 디렉토리 없음")
         
         # 새로고침 버튼
         if st.button("🔄 목록 새로고침", use_container_width=True):
