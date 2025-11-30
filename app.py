@@ -133,7 +133,7 @@ def main():
 
                         # SVG 표시 (높이를 명시적으로 지정 300px)
                         st.html(f"""
-                            <div style="width: 100%; max-width: 400px; height: 300px; margin: 0 auto; border: 2px solid #eee; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: white;">
+                            <div style="width: 100%; max-width: 400px; height: 400px; margin: 0 auto; border: 2px solid #eee; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: white;">
                                 {svg_code}
                             </div>
                         """)
