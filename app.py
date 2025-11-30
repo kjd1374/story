@@ -67,7 +67,7 @@ def main():
 
         try:
             # Gemini 설정
-            genai.configure(_key=api_key)
+            genai.configure(api_key=api_key)
             model = genai.GenerativeModel(
                 model_name="gemini-2.5-flash",
                 system_instruction=SYSTEM_PROMPT
