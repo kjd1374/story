@@ -41,7 +41,7 @@ SYSTEM_PROMPT = """
 **상황:** [묘사]
 **대사:** [대사]
 ---SVG_START---
-<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" height="100%" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
   <rect width="100%" height="100%" fill="white"/>
   <!-- 여기에 단순한 그림 코드 작성 -->
 </svg>
@@ -124,9 +124,16 @@ def main():
                         # SVG 코드 정제 (가끔 마크다운 코드블럭 ```xml 등이 섞일 수 있음)
                         svg_code = svg_code.replace("```xml", "").replace("```svg", "").replace("```", "")
                         
-                        # SVG 표시
+                        # SVG 태그에 width/height 강제 주입 (보정)
+                        if "<svg" in svg_code:
+                            # 기존 width/height/viewBox가 어떻게 되어있든, 우리가 원하는 스타일로 덮어씌우기 위해
+                            # svg 태그를 찾아서 style 속성을 추가하거나 교체하는 방식이 가장 확실하지만,
+                            # 간단하게는 부모 div에서 크기를 잡아주는 것이 좋습니다.
+                            pass
+
+                        # SVG 표시 (높이를 명시적으로 지정 300px)
                         st.html(f"""
-                            <div style="display: flex; justify-content: center; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; padding: 10px;">
+                            <div style="width: 100%; max-width: 400px; height: 300px; margin: 0 auto; border: 2px solid #eee; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: white;">
                                 {svg_code}
                             </div>
                         """)
