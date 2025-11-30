@@ -83,37 +83,86 @@ SYSTEM_PROMPT = """
    - 효과음의 위치와 크기
    - 시각적 효과 (번쩍임, 먼지, 바람 등)
 
-[SVG 그림 - 매우 중요!]
-SVG 그림은 단순한 스케치가 아니라, 위에서 설명한 모든 요소를 시각적으로 표현해야 합니다.
+[SVG 그림 - 매우 중요! 반드시 읽고 따라하세요!]
+SVG 그림은 단순한 스케치가 아니라, 위에서 설명한 모든 요소를 시각적으로 명확하게 표현해야 합니다.
+사람이 보기에 이해할 수 있는 수준의 그림이어야 합니다.
 
 - **좌표계:** 반드시 viewBox="0 0 400 400" 기준. (0~400 사이 좌표만 사용)
 - **필수 요소:** 모든 SVG는 <rect width="400" height="400" fill="white"/> 로 시작해서 흰 배경을 깔아야 함.
+
 - **배경:** 배경 요소를 먼저 그리고, 그 위에 캐릭터를 그려야 함. 배경이 없으면 단조로워 보임.
-- **캐릭터 디자인:**
-  - 두더지: 
-    * 몸통: 회색 타원형 (<ellipse cx="200" cy="250" rx="60" ry="80" fill="#999"/>)
-    * 머리: 작은 타원형, 코는 검은 원 (<circle cx="200" cy="150" r="8" fill="black"/>)
-    * 눈: 작은 원 2개, 표정에 따라 모양 변경
-    * 팔과 다리: <line> 또는 <rect>로 표현
-  - 페럿: 
-    * 얼굴: 역삼각형 또는 다각형 (<polygon points="..."/>)
-    * 머리카락: 긴 선이나 타원형
-    * 눈: 날카로운 형태, 표정에 따라 변경
-- **표정 표현:** 
-  - 기쁨: 눈을 반원으로, 입을 웃는 모양으로 (<path> 또는 <arc> 사용)
-  - 슬픔: 눈에 눈물 추가, 입을 아래로
-  - 화남: 눈을 찡그린 모양, 입을 크게 벌림
-  - 당황: 눈을 크게 뜸, 입을 벌림
-- **포즈 표현:** 
-  - 팔과 다리의 각도와 위치로 자세 표현
-  - 몸의 기울기로 움직임 표현
-- **배경 요소:** 
-  - 소품들을 <rect>, <circle>, <line> 등으로 표현
-  - 원근감을 위해 크기와 위치 조절
-- **구도 표현:** 
-  - 클로즈업: 캐릭터를 크게 그리기
-  - 풀샷: 캐릭터 전체와 배경 포함
-  - 미디엄샷: 상반신과 일부 배경
+  예시: 공항이면 바닥(회색 사각형), 벽(연한 회색), 창문, 표지판 등
+
+- **캐릭터 디자인 - 두더지 (매우 중요!):**
+  * 머리: 타원형, 중심 (cx="200" cy="120"), 크기 (rx="35" ry="40"), 색상 (#aaa 또는 #999)
+  * 몸통: 타원형, 중심 (cx="200" cy="220"), 크기 (rx="50" ry="70"), 색상 (#999)
+  * 코: 검은 원, 중심 (cx="200" cy="120"), 반지름 r="6"
+  * 눈: 두 개의 원, 좌 (cx="185" cy="110"), 우 (cx="215" cy="110"), 반지름 r="5", 표정에 따라 모양 변경
+    - 기쁨: 눈을 반원으로 (<path d="M 180 110 Q 185 105 190 110" stroke="black" fill="none" stroke-width="2"/>)
+    - 당황: 큰 원 (r="8")
+    - 화남: 작은 원 + 위쪽 선 (찡그린 눈)
+  * 입: 표정에 따라
+    - 기쁨: 웃는 입 (<path d="M 185 130 Q 200 140 215 130" stroke="black" fill="none" stroke-width="2"/>)
+    - 당황: 벌어진 입 (타원형 <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/>)
+  * 팔: <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/>
+  * 다리: <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/>
+
+- **캐릭터 디자인 - 페럿 (매우 중요!):**
+  * 얼굴: 역삼각형, 중심 (cx="200" cy="130")
+    <polygon points="200,80 160,150 240,150" fill="#fff" stroke="#333" stroke-width="2"/>
+  * 머리카락: 긴 타원형 또는 여러 선
+    <ellipse cx="200" cy="90" rx="45" ry="25" fill="#ffd700" opacity="0.8"/>
+  * 눈: 날카로운 형태, 다각형 또는 타원
+    <polygon points="185,120 190,115 195,120 190,125" fill="black"/>
+  * 입: 작은 선 또는 다각형
+
+- **표정 표현 (구체적 예시):**
+  - 기쁨: 눈을 반원(^)으로, 입을 웃는 모양(∩)으로
+  - 슬픔: 눈에 눈물 추가 (<circle cx="185" cy="115" r="2" fill="blue"/>), 입을 아래로(∩)
+  - 화남: 눈을 찡그린 모양(/\ /\), 입을 크게 벌림
+  - 당황: 눈을 크게 뜸(큰 원), 입을 벌림(타원형)
+
+- **포즈 표현 (구체적 예시):**
+  - 서있음: 다리를 똑바로, 팔을 몸통 옆에
+  - 앉음: 다리를 구부림, 몸통을 낮춤
+  - 뛰는 중: 다리를 앞뒤로, 팔을 뻗음, 몸을 앞으로 기울임
+  - 손 뻗음: 팔을 특정 방향으로 <line>으로 표현
+
+- **배경 요소 (구체적 예시):**
+  - 테이블: <rect x="50" y="300" width="300" height="20" fill="#8B4513"/>
+  - 의자: <rect x="100" y="280" width="60" height="80" fill="#654321"/>
+  - 핸드폰: <rect x="180" y="200" width="40" height="60" fill="#333" rx="3"/>
+  - 표지판: <rect x="300" y="50" width="80" height="100" fill="#fff" stroke="#000"/>
+  - 원근감: 멀리 있는 것은 작고, 가까운 것은 크게
+
+- **구도 표현:**
+  - 클로즈업: 캐릭터를 크게 (머리만 또는 상반신만, 크기 200x200 정도)
+  - 풀샷: 캐릭터 전체와 배경 포함 (전신, 크기 100x200 정도)
+  - 미디엄샷: 상반신과 일부 배경 (상반신, 크기 150x200 정도)
+
+[SVG 코드 작성 예시 - 반드시 참고하세요!]
+```svg
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="white"/>
+  <!-- 배경: 공항 대합실 -->
+  <rect x="0" y="300" width="400" height="100" fill="#ddd"/> <!-- 바닥 -->
+  <rect x="0" y="0" width="400" height="300" fill="#e8f4f8"/> <!-- 벽 -->
+  <rect x="50" y="50" width="100" height="150" fill="#87ceeb" opacity="0.3"/> <!-- 창문 -->
+  <!-- 두더지: 당황한 표정 -->
+  <ellipse cx="200" cy="220" rx="50" ry="70" fill="#999"/> <!-- 몸통 -->
+  <ellipse cx="200" cy="120" rx="35" ry="40" fill="#aaa"/> <!-- 머리 -->
+  <circle cx="200" cy="120" r="6" fill="black"/> <!-- 코 -->
+  <circle cx="185" cy="110" r="8" fill="black"/> <!-- 왼쪽 눈 (큰 원) -->
+  <circle cx="215" cy="110" r="8" fill="black"/> <!-- 오른쪽 눈 (큰 원) -->
+  <ellipse cx="200" cy="135" rx="8" ry="12" fill="black"/> <!-- 벌어진 입 -->
+  <line x1="150" y1="200" x2="130" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/> <!-- 왼쪽 팔 -->
+  <line x1="250" y1="200" x2="270" y2="180" stroke="#666" stroke-width="8" stroke-linecap="round"/> <!-- 오른쪽 팔 -->
+  <line x1="170" y1="290" x2="160" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/> <!-- 왼쪽 다리 -->
+  <line x1="230" y1="290" x2="240" y2="350" stroke="#666" stroke-width="10" stroke-linecap="round"/> <!-- 오른쪽 다리 -->
+</svg>
+```
+
+위 예시처럼 반드시 배경, 캐릭터의 모든 부위(머리, 몸통, 팔, 다리), 표정을 명확하게 그려야 합니다.
 
 [출력 포맷]
 반드시 아래 형식을 지키세요.
@@ -307,25 +356,46 @@ def main():
                     display_story(title, parts_data)
                     
                     # 저장 버튼
-                    if st.button("💾 콘티 저장하기", use_container_width=True, key="save_story"):
-                        if 'last_story' in st.session_state:
-                            story = st.session_state['last_story']
-                            try:
-                                filepath = save_story(
-                                    story['title'], 
-                                    story['episode'], 
-                                    story['response_text'], 
-                                    story['parts']
-                                )
-                                st.success(f"✅ 저장 완료! 📁 {filepath.name}")
-                                st.info("💡 '저장된 콘티 보기' 탭에서 확인할 수 있습니다.")
-                                # 저장 성공 후 잠시 대기 후 새로고침 (선택사항)
-                                # st.rerun()을 사용하면 즉시 새로고침되지만, 사용자가 메시지를 볼 수 없음
-                            except Exception as e:
-                                st.error(f"저장 중 오류 발생: {e}")
-                                st.exception(e)  # 상세한 에러 정보 표시
-                        else:
-                            st.warning("저장할 콘티가 없습니다.")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if st.button("💾 콘티 저장하기", use_container_width=True, key="save_story"):
+                            if 'last_story' in st.session_state:
+                                story = st.session_state['last_story']
+                                try:
+                                    filepath = save_story(
+                                        story['title'], 
+                                        story['episode'], 
+                                        story['response_text'], 
+                                        story['parts']
+                                    )
+                                    st.success(f"✅ 저장 완료! 📁 {filepath.name}")
+                                    st.info("💡 '저장된 콘티 보기' 탭에서 확인할 수 있습니다.")
+                                    # 저장 성공 표시를 위해 세션 상태에 저장 완료 플래그 설정
+                                    st.session_state['save_success'] = True
+                                    st.session_state['saved_filename'] = filepath.name
+                                except Exception as e:
+                                    st.error(f"저장 중 오류 발생: {e}")
+                                    st.exception(e)  # 상세한 에러 정보 표시
+                            else:
+                                st.warning("저장할 콘티가 없습니다.")
+                    
+                    # 저장 성공 시 디버깅 정보 표시
+                    if st.session_state.get('save_success', False):
+                        saved_filename = st.session_state.get('saved_filename', '')
+                        with st.expander("🔍 저장 확인 (디버깅)", expanded=True):
+                            st.write(f"✅ 저장 완료된 파일: {saved_filename}")
+                            if STORAGE_DIR.exists():
+                                files = list(STORAGE_DIR.glob("*.json"))
+                                st.write(f"📁 저장된 파일 총 개수: {len(files)}")
+                                if files:
+                                    st.write("📋 최근 저장된 파일 목록:")
+                                    for f in sorted(files, reverse=True)[:5]:
+                                        st.write(f"  - {f.name}")
+                                # 파일 경로 표시
+                                st.write(f"📂 저장 경로: {STORAGE_DIR.absolute()}")
+                            else:
+                                st.error("❌ 저장 디렉토리가 없습니다!")
+                                st.write(f"생성 시도: {STORAGE_DIR.absolute()}")
             
             except Exception as e:
                 st.error(f"에러 발생: {e}")
